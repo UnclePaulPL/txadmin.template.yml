@@ -139,8 +139,16 @@ tasks:
       
 
   # Create FHP placeholder directories
-  - action: mkdir
-    path: ./resources/[fhp]
+  - action: write_file
+  file: ./resources/[fhp]/fhp_vehicles/fxmanifest.lua
+  data: |
+    fx_version 'cerulean'
+    game 'gta5'
+    author 'FHP'
+    description 'FHP Vehicle Configuration'
+    version '1.0.0'
+    shared_script 'config.lua'
+
 
   - action: mkdir
     path: ./resources/[fhp]/fhp_vehicles
