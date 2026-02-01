@@ -1,0 +1,174 @@
+name: FHP vMenu Server
+version: 1.0.0
+author: FHP Management System
+description: Florida Highway Patrol vMenu server template with nat2k15 base styling
+
+variables:
+  serverName: "Florida Highway Patrol | Serious RP"
+  maxPlayers: "32"
+
+tasks:
+  # Download and Extract Base Resources
+  - action: download_github
+    src: https://github.com/citizenfx/cfx-server-data
+    dest: ./resources/[cfx-default]
+
+  # Download vMenu
+  - action: download_github
+    src: https://github.com/TomGrobbe/vMenu
+    dest: ./resources/[vMenu]
+    ref: master
+
+  # Create server.cfg
+  - action: write_file
+    file: ./server.cfg
+    data: |
+      # =====================================
+      # Florida Highway Patrol - FiveM Server
+      # txAdmin Remote Template
+      # nat2k15 vMenu Base
+      # =====================================
+      
+      # Server Variables
+      sv_hostname "Florida Highway Patrol | Serious RP"
+      sv_maxclients 32
+      set sv_enforceGameBuild 2944
+      sv_scriptHookAllowed 0
+      sv_endpointPrivacy true
+      set onesync on
+      
+      # Steam API (optional)
+      # set steam_webApiKey "YOUR_STEAM_API_KEY"
+      
+      # Server Convars
+      setr vmenu_use_permissions true
+      setr vmenu_menu_staff_only false
+      setr vmenu_enable_weather_sync true
+      setr vmenu_enable_time_sync true
+      setr vmenu_enable_dynamic_weather true
+      setr vmenu_teleport_to_wp true
+      setr vmenu_keep_spawned_vehicles_persistent false
+      
+      # Disable vMenu Defaults
+      setr vmenu_disable_server_info_convars false
+      setr vmenu_disable_daily_update_checks false
+      
+      # Resource Schedule
+      exec resources.cfg
+      exec permissions.cfg
+      
+      # Load vMenu
+      ensure vMenu
+      
+      # Load FHP Resources
+      ensure fhp_vehicles
+      ensure fhp_liveries
+      ensure fhp_dispatch
+      
+
+  # Create permissions.cfg
+  - action: write_file
+    file: ./permissions.cfg
+    data: |
+      # =====================================
+      # FHP Permissions Configuration
+      # txAdmin Template
+      # =====================================
+      
+      # Inheritance
+      add_principal group.admin group.moderator
+      add_principal group.superadmin group.admin
+      
+      # vMenu Permissions - Super Admin
+      add_ace group.superadmin vmenu.everything allow
+      add_ace group.superadmin command allow
+      
+      # vMenu Permissions - Admin
+      add_ace group.admin vmenu.everything allow
+      
+      # vMenu Permissions - Moderator
+      add_ace group.moderator vmenu.player_options allow
+      add_ace group.moderator vmenu.vehicle_options allow
+      add_ace group.moderator vmenu.vehicle_spawner allow
+      add_ace group.moderator vmenu.weather_options allow
+      add_ace group.moderator vmenu.time_options allow
+      
+      # vMenu Permissions - Trusted (Senior Troopers)
+      add_ace group.trusted vmenu.player_options allow
+      add_ace group.trusted vmenu.vehicle_options allow
+      add_ace group.trusted vmenu.vehicle_spawner allow
+      
+      # vMenu Permissions - User (Troopers)
+      add_ace group.user vmenu.player_options allow
+      add_ace group.user vmenu.vehicle_spawner.fhp allow
+      
+      # =====================================
+      # Officer Assignments
+      # =====================================
+      
+      
+
+  # Create resources.cfg  
+  - action: write_file
+    file: ./resources.cfg
+    data: |
+      # =====================================
+      # FHP Resources Configuration
+      # txAdmin Template
+      # =====================================
+      
+      # Cfx Default Resources
+      ensure mapmanager
+      ensure chat
+      ensure spawnmanager
+      ensure sessionmanager
+      ensure basic-gamemode
+      ensure hardcap
+      ensure baseevents
+      
+      # Standalone Resources
+      ensure vMenu
+      ensure Luxart
+      
+      # FHP Custom Resources
+      ensure fhp_vehicles
+      ensure fhp_liveries
+      ensure fhp_callouts
+      ensure fhp_dispatch
+      ensure fhp_mdt
+      
+
+  # Create FHP placeholder directories
+  - action: mkdir
+    path: ./resources/[fhp]
+
+  - action: mkdir
+    path: ./resources/[fhp]/fhp_vehicles
+
+  - action: mkdir
+    path: ./resources/[fhp]/fhp_liveries
+
+  # Create vehicle config placeholder
+  - action: write_file
+    file: ./resources/[fhp]/fhp_vehicles/fxmanifest.lua
+    data: |
+      fx_version 'cerulean'
+      game 'gta5'
+      
+      author 'FHP'
+      description 'FHP Vehicle Configuration'
+      version '1.0.0'
+      
+      shared_script 'config.lua'
+
+  # Final message
+  - action: connect_database
+
+  - action: done
+    message: |
+      FHP vMenu Server deployed successfully!
+      
+      Next Steps:
+      1. Add your FHP vehicle models to resources/[fhp]/fhp_vehicles
+      2. Configure Discord IDs in permissions.cfg
+      3. Start your server and enjoy!
