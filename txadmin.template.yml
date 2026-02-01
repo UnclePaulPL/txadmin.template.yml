@@ -64,7 +64,6 @@ tasks:
       ensure fhp_vehicles
       ensure fhp_liveries
       ensure fhp_dispatch
-      
 
   # Create permissions.cfg
   - action: write_file
@@ -101,12 +100,6 @@ tasks:
       # vMenu Permissions - User (Troopers)
       add_ace group.user vmenu.player_options allow
       add_ace group.user vmenu.vehicle_spawner.fhp allow
-      
-      # =====================================
-      # Officer Assignments
-      # =====================================
-      
-      
 
   # Create resources.cfg  
   - action: write_file
@@ -136,42 +129,49 @@ tasks:
       ensure fhp_callouts
       ensure fhp_dispatch
       ensure fhp_mdt
-      
 
-  # Create FHP placeholder directories
-  - action: write_file
-  file: ./resources/[fhp]/fhp_vehicles/fxmanifest.lua
-  data: |
-    fx_version 'cerulean'
-    game 'gta5'
-    author 'FHP'
-    description 'FHP Vehicle Configuration'
-    version '1.0.0'
-    shared_script 'config.lua'
-
-
-  - action: mkdir
-    path: ./resources/[fhp]/fhp_vehicles
-
-  - action: mkdir
-    path: ./resources/[fhp]/fhp_liveries
-
-  # Create vehicle config placeholder
+  # Create FHP Vehicle fxmanifest
   - action: write_file
     file: ./resources/[fhp]/fhp_vehicles/fxmanifest.lua
     data: |
       fx_version 'cerulean'
       game 'gta5'
-      
       author 'FHP'
       description 'FHP Vehicle Configuration'
       version '1.0.0'
-      
       shared_script 'config.lua'
 
-  # Final message
-  - action: connect_database
+  # Create FHP Livery fxmanifest
+  - action: write_file
+    file: ./resources/[fhp]/fhp_liveries/fxmanifest.lua
+    data: |
+      fx_version 'cerulean'
+      game 'gta5'
+      author 'FHP'
+      description 'FHP Livery Configuration'
+      version '1.0.0'
 
+  # Create FHP Dispatch fxmanifest
+  - action: write_file
+    file: ./resources/[fhp]/fhp_dispatch/fxmanifest.lua
+    data: |
+      fx_version 'cerulean'
+      game 'gta5'
+      author 'FHP'
+      description 'FHP Dispatch Configuration'
+      version '1.0.0'
+
+  # Create FHP Callouts fxmanifest
+  - action: write_file
+    file: ./resources/[fhp]/fhp_callouts/fxmanifest.lua
+    data: |
+      fx_version 'cerulean'
+      game 'gta5'
+      author 'FHP'
+      description 'FHP Callouts Configuration'
+      version '1.0.0'
+
+  # Final message
   - action: done
     message: |
       FHP vMenu Server deployed successfully!
